@@ -2,7 +2,6 @@
 
 A practical guide to creating effective data visualizations in R using ggplot2 and spatial mapping tools. This repository focuses on clear communication, reproducible workflows, and applied examples.
 
-
 ---
 
 ## Learning objectives
@@ -26,11 +25,15 @@ By the end of this session, you will be able to:
 
 ## Materials
 
-- **Slides (English):** [Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
-- **Slides (Vietnamese):** [Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
-- **R Code:** [Rcode_Data_Visualization.R](./Rcode_Data_Visualization.R)
-- **Data:** [data.xlsx](./data.xlsx)
+**Slides**
+- English: [Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
+- Vietnamese: [Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
 
+**Code & data**
+- R script: [Rcode_Data_Visualization.R](./Rcode_Data_Visualization.R)
+- Dataset: [data.xlsx](./data.xlsx)
+
+---
 
 ## R Common packages used:
 
