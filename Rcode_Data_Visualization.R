@@ -1,0 +1,375 @@
+############################################################
+# Data Visualization in R
+# Created by Ali Mirzazadeh
+# Contact: ali.mirzazadeh@ucsf.edu
+############################################################
+
+# Set working directory (edit path as needed)
+setwd("/Users/alimirzazadeh1/Documents/GitHub/DataVisualization")
+
+# Load data
+library(readxl)
+V <- read_excel("data.xlsx", sheet = "prvData")
+colnames(V)
+colnames(V) <- c("link","province","region","male_pop_15_49","urban_area","urban_prop","n_univ_college","n_university","n_college","n_industry_zone","literacy_rate","pop_density","poverty_rate","tourism_rev_bil_vnd")
+
+
+######################
+# Show data by plots
+######################
+
+# Bar plot
+library(ggplot2)
+
+# Data: Male Population Aged 15–49 by Province
+
+# plot A1 
+ggplot(V, aes(x = province, y = male_pop_15_49)) +
+  geom_col()
+
+# plot A2
+ggplot(V, aes(x = province, y = male_pop_15_49)) +
+  geom_col() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# plot A3
+library(ggplot2)
+ggplot(V, aes(x = reorder(province, male_pop_15_49), y = male_pop_15_49)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Male Population Aged 15–49 by Province",
+    x = "Province",
+    y = "Male Population (15–49)"
+  ) +
+  theme_minimal()
+
+# plot A4: Improve the numbers format 
+library(scales)
+ggplot(V, aes(x = reorder(province, male_pop_15_49), y = male_pop_15_49)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Male Population Aged 15–49 by Province",
+    x = "Province",
+    y = "Population"
+  ) +
+  theme_minimal()
+
+# Stack bar
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# Data: Number of Universities and Colleges by Province
+
+# Plot B1
+# First, make a long data 
+V_long <- V %>%
+  pivot_longer(
+    cols = c(n_university, n_college),
+    names_to = "type",
+    values_to = "count"
+  )
+
+ggplot(V_long, aes(x = province, y = count, fill = type)) +
+  geom_col() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    title = "Number of Universities and Colleges by Province",
+    x = "Province",
+    y = "Number of Institutions",
+    fill = "Institution Type"
+  ) +
+  coord_flip() +
+  theme_minimal()
+
+# Plot B2: add value labels
+ggplot(V_long, aes(x = province, y = count, fill = type)) +
+  geom_col() +
+  
+  geom_text(
+    aes(label = ifelse(count == 0, "", count)),
+    position = position_stack(vjust = 0.5),
+    size = 3,
+    color = "white"
+  ) +
+  
+  coord_flip() +
+  
+  scale_fill_manual(
+    values = c("n_university" = "#1f78b4", "n_college" = "#33a02c"),
+    labels = c("n_university" = "Universities",
+               "n_college" = "Colleges")
+  ) +
+  
+  labs(
+    title = "Number of Universities and Colleges by Province",
+    x = "Province",
+    y = "Number of Institutions",
+    fill = "Institution Type"
+  ) +
+  
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 9),
+        legend.position = "top")
+
+
+
+# scatter plot 
+library(ggplot2)
+
+# base R plot()
+plot(V$poverty_rate, V$tourism_rev_bil_vnd,
+     xlab = "Poverty Rate (%)",
+     ylab = "Tourism Revenue (Billion VND)",
+     main = "Poverty Rate vs Tourism Revenue by Province",
+     pch = 19,
+     col = "steelblue")
+
+# To exclude Hanoi and Ho Chi Minh City
+V2 <- subset(V, !province %in% c("Ha Noi", "Ho Chi Minh"))
+
+plot(V2$poverty_rate, V2$tourism_rev_bil_vnd,
+     xlab = "Poverty Rate (%)",
+     ylab = "Tourism Revenue (Billion VND)",
+     main = "Poverty Rate vs Tourism Revenue by Province (excluding Hanoi and Ho Chi Minh City)",
+     pch = 19,
+     col = "steelblue")
+
+
+ggplot(V2, aes(x = poverty_rate, y = tourism_rev_bil_vnd)) +
+  geom_point(color = "steelblue", size = 3) +
+  labs(
+    title = "Relationship Between Poverty Rate and Tourism Revenue (excluding Hanoi and Ho Chi Minh City)",
+    x = "Poverty Rate (%)",
+    y = "Tourism Revenue (Billion VND)"
+  ) +
+  theme_minimal()
+
+ggplot(V2, aes(x = poverty_rate, y = tourism_rev_bil_vnd)) +
+  geom_point(color = "steelblue", size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(
+    title = "Relationship Between Poverty Rate and Tourism Revenue (excluding Hanoi and Ho Chi Minh City)",
+    x = "Poverty Rate (%)",
+    y = "Tourism Revenue (Billion VND)"
+  ) +
+  theme_minimal()
+
+
+library(ggrepel)
+ggplot(V2, aes(x = poverty_rate, y = tourism_rev_bil_vnd)) +
+  geom_point(color = "steelblue", size = 3) +
+  geom_text_repel(aes(label = province), size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(
+    title = "Relationship Between Poverty Rate and Tourism Revenue (excluding Hanoi and Ho Chi Minh City)",
+    x = "Poverty Rate (%)",
+    y = "Tourism Revenue (Billion VND)"
+  ) +
+  theme_minimal()
+
+
+# Mosaic plot
+library(vcd)
+
+# create poverty categories
+hist(V$poverty_rate)
+
+V$poverty_cat <- cut(V$poverty_rate,
+                     breaks = c(0, 5, 10, max(V$poverty_rate, na.rm = TRUE)),
+                     labels = c("Low", "Medium", "High"),
+                     include.lowest = TRUE)
+table(V$poverty_cat)
+table(V$region, V$poverty_cat)
+prop.table(table(V$region, V$poverty_cat), 1)
+round(prop.table(table(V$region, V$poverty_cat), 1)*100, 1)
+
+round(prop.table(table(V$region))*100, 1)
+
+# Plot D1
+mosaic(~ region + poverty_cat,
+       data = V,
+       color = TRUE,
+       main = "Poverty Level by Region (Low: <5%, Medium: 5-9.9%, High: ≥10%)",
+       xlab = "Region",
+       ylab = "Poverty Level",
+       labeling_args = list(
+         rot_labels = c(0, 0),     # keep labels horizontal
+         gp_labels = grid::gpar(fontsize = 9)  # smaller labels
+       ))
+
+# Plot D2
+mosaic(~ region + poverty_cat,
+       data = V,
+       color = TRUE,
+       labeling = labeling_border,
+       main = "Poverty Level by Region (Low: <5%, Medium: 5-9.9%, High: ≥10%)",
+       xlab = "Region",
+       ylab = "Poverty Level",
+       labeling_args = list(
+         rot_labels = c(0, 0),
+         gp_labels = grid::gpar(fontsize = 9)
+       ))
+
+
+
+library(vcd)
+library(grid)
+mosaic(~ region + poverty_cat,
+       data = V,
+       color = TRUE,
+       main = "Poverty Level by Region (Low: <5%, Medium: 5-9.9%, High: ≥10%)",
+       labeling_args = list(
+         rot_labels = c(0,0),                 # keep horizontal labels
+         just_labels = c("center","right"),    # center and right align labels
+         gp_labels = grid::gpar(fontsize = 9),
+         set_varnames = c(region = "", poverty_cat = "")
+       ))
+
+
+# Boxplot
+library(ggplot2)
+
+# plot B1: Boxplot of literacy rate by region.
+ggplot(V, aes(x = region, y = literacy_rate)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(
+    title = "Literacy Rate by Region",
+    x = "Region",
+    y = "Literacy Rate (%)"
+  ) +
+  theme_minimal()
+
+# plot B2: show province data points 
+ggplot(V, aes(x = region, y = literacy_rate)) +
+  geom_boxplot(fill = "skyblue", alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  labs(
+    title = "Literacy Rate by Region",
+    x = "Region",
+    y = "Literacy Rate (%)"
+  ) +
+  theme_minimal()
+
+
+# plot B3: order regions by median literacy
+ggplot(V, aes(x = reorder(region, literacy_rate, median), y = literacy_rate)) +
+  geom_boxplot(fill = "skyblue", alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  labs(
+    title = "Literacy Rate by Region",
+    x = "Region",
+    y = "Literacy Rate (%)"
+  ) +
+  theme_minimal()
+
+
+
+######################
+# Show data on maps
+######################
+
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(geodata)
+
+# download country map (example: Vietnam provinces level 1)
+map <- geodata::gadm(country = "VNM", level = 1, path = tempdir())
+map <- st_as_sf(map)
+
+# check province column name
+names(map)
+table(map$VARNAME_1)
+
+# join attribute data (V) to map
+map_data <- map %>%
+  left_join(V, by = c("VARNAME_1" = "province"))  
+
+
+# plot map of urban proportion
+ggplot(map_data) +
+  geom_sf(aes(fill = urban_prop), color = "grey70", size = 0.2)
+
+## more improvement
+ggplot(map_data) +
+  geom_sf(aes(fill = urban_prop), color = "grey70", size = 0.2) +
+  scale_fill_viridis_c(labels = scales::percent)
+
+## more improvement
+ggplot(map_data) +
+  geom_sf(aes(fill = urban_prop), color = "grey70", size = 0.2) +
+  scale_fill_viridis_c(labels = scales::percent) +
+  labs(
+    title = "Proportion of Population Living in Urban Areas",
+    fill = "Urban (%)"
+  ) +
+  theme_minimal()
+
+## more improvement
+ggplot(map_data) +
+  geom_sf(aes(fill = urban_prop), color = "grey70", size = 0.2) +
+  scale_fill_viridis_c(labels = scales::percent) +
+  labs(
+    title = "Proportion of Population Living in Urban Areas",
+    fill = "Urban (%)"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),     # remove grid
+    axis.text = element_blank(),      # remove axis numbers
+    axis.title = element_blank(),     # remove axis titles
+    axis.ticks = element_blank()      # remove ticks
+  )
+
+
+## Add labels only where urban_prop > 60%
+ggplot(map_data) +
+  geom_sf(aes(fill = urban_prop), color = "white", size = 0.3) +
+  
+  # labels only where urban_prop > 60%
+  geom_sf_text(
+    data = map_data %>% filter(urban_prop > 0.6),
+    aes(label = paste0(NAME_1, " (", scales::percent(urban_prop, accuracy = 1), ")")),
+    size = 3,
+    fontface = "bold",
+    color = "black"
+  ) +
+  
+  scale_fill_viridis_c(
+    labels = scales::label_percent(accuracy = 1),
+    option = "plasma"
+  ) +
+  
+  labs(
+    title = "Percent of Population Living in Urban Areas",
+    fill = "Urban (%)"
+  ) +
+  
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+
+
+
+
+library(openxlsx)
+OUT<-  list(data = V)
+write.xlsx(OUT,file = "V.xlsx")
+
+
+
+############################################################
+# End
+############################################################
