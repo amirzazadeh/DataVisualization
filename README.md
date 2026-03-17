@@ -26,20 +26,15 @@ By the end of this session, you will be able to:
 
 ## Materials
 
-# **Slides** [English]: Slides_Eng_Data_Visualization_R_Ali_Mirzazadeh.pptx
-
-# **Slides** [Vietnamese]: (Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
-
-# **R Code** [R Code] (Rcode_Data_Visualization.R)
-
-# Data [Data] (data.xlsx)
+- **Slides (English):** [Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
+- **Slides (Vietnamese):** [Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
+- **R Code:** [Rcode_Data_Visualization.R](./Rcode_Data_Visualization.R)
+- **Data:** [data.xlsx](./data.xlsx)
 
 
-# R Common packages used:
+## R Common packages used:
 
 - Visualization: ggplot2
 - Data manipulation: dplyr
 - Spatial data & mapping: sf, tmap
 - Plot customization: theme(), labs()
-
----
