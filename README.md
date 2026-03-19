@@ -29,6 +29,9 @@ By the end of this session, you will be able to:
 - English: [Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Eng_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
 - Vietnamese: [Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx](./Slides_Viet_Data_Visualization_in_R_Ali_Mirzazadeh.pptx)
 
+**Recorded Video**
+- Video: [Watch the recorded video](https://ucsf.box.com/s/cepqbyu9b28vc7rk7esog1bpv5ut157t)
+
 **Code & data**
 - R script: [Rcode_Data_Visualization.R](./Rcode_Data_Visualization.R)
 - Dataset: [data.xlsx](./data.xlsx)
